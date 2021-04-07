@@ -31,7 +31,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
     int theSlotCount;
     int remainingBeanCount;
     int board[][];
-
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
 	 * logic with the provided number of slots.
@@ -42,6 +41,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		// TODO: Implement
         theSlotCount = slotCount;
         board = new int[slotCount][slotCount];
+        remainingBeanCount = 0; // needs changed
 	}
 
 	/**
@@ -72,6 +72,11 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getInFlightBeanXPos(int yPos) {
 		// TODO: Implement
+        for(int x=0; 0<getSlotCount(); x++){
+            if(board[x][yPos] > 0){
+                return x;
+            }
+        }
 		return NO_BEAN_IN_YPOS;
 	}
 
@@ -83,9 +88,8 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getSlotBeanCount(int i) {
 		// TODO: Implement
-            return board[i][getSlotCount()]
+            return board[i][getSlotCount()-1];
         }
-	}
 
 	/**
 	 * Calculates the average slot number of all the beans in slots.
@@ -94,7 +98,12 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
-		return 0;
+        int average = 0;
+        for (int x = 0; x<getSlotCount(); x++){
+            average += board[x][getSlotCount()-1];
+        }
+        average = average/getSlotCount();
+		return average;
 	}
 
 	/**
