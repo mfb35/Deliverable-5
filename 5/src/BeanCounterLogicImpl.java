@@ -28,6 +28,9 @@ import java.util.Random;
 
 public class BeanCounterLogicImpl implements BeanCounterLogic {
 	// TODO: Add member methods and variables as needed
+    int theSlotCount;
+    int remainingBeanCount;
+    int board[][];
 
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
@@ -37,6 +40,8 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	BeanCounterLogicImpl(int slotCount) {
 		// TODO: Implement
+        theSlotCount = slotCount;
+        board = new int[slotCount][slotCount];
 	}
 
 	/**
@@ -46,7 +51,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getSlotCount() {
 		// TODO: Implement
-		return 1;
+		return theSlotCount;
 	}
 	
 	/**
@@ -56,7 +61,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getRemainingBeanCount() {
 		// TODO: Implement
-		return 0;
+		return remainingBeanCount;
 	}
 
 	/**
@@ -78,7 +83,8 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getSlotBeanCount(int i) {
 		// TODO: Implement
-		return 0;
+            return board[i][getSlotCount()]
+        }
 	}
 
 	/**
