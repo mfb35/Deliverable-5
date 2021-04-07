@@ -28,9 +28,10 @@ import java.util.Random;
 
 public class BeanCounterLogicImpl implements BeanCounterLogic {
 	// TODO: Add member methods and variables as needed
-    int theSlotCount;
-    int remainingBeanCount;
-    int board[][];
+    int theSlotCount;                                               //total amount of slots beans can collect in
+    int remainingBeanCount;                                         //beans that still have not entered the machine
+    int board[][];                                                  //a 2d array representation of the machine(some parts of the array are unused)
+    
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
 	 * logic with the provided number of slots.
@@ -39,9 +40,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	BeanCounterLogicImpl(int slotCount) {
 		// TODO: Implement
-        theSlotCount = slotCount;
-        board = new int[slotCount][slotCount];
-        remainingBeanCount = 0; // needs changed
+        theSlotCount = slotCount;                                   //initialize slot count based on parameter
+        board = new int[slotCount][slotCount];                      //make the machine the correct size
+        remainingBeanCount = 0; // needs changed                    //should be args[0]
 	}
 
 	/**
@@ -51,7 +52,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getSlotCount() {
 		// TODO: Implement
-		return theSlotCount;
+		return theSlotCount;                                        //simple getter
 	}
 	
 	/**
@@ -61,7 +62,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getRemainingBeanCount() {
 		// TODO: Implement
-		return remainingBeanCount;
+		return remainingBeanCount;                                  //simple getter
 	}
 
 	/**
@@ -72,12 +73,12 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getInFlightBeanXPos(int yPos) {
 		// TODO: Implement
-        for(int x=0; 0<getSlotCount(); x++){
-            if(board[x][yPos] > 0){
-                return x;
+        for(int x=0; 0<getSlotCount(); x++){                        //itterates through a single column in the 2d array(columns are the x axis in this representation)(unused parts of array are checked too)
+            if(board[x][yPos] > 0){                                 //java defualt for ints is zero, so if it is not zero there is a bean there
+                return x;                                           //bean found, return its position on the 
             }
         }
-		return NO_BEAN_IN_YPOS;
+		return NO_BEAN_IN_YPOS;                                     //no beans in this particualar column of the array(yPos in machine is a row in the array)
 	}
 
 	/**
@@ -88,7 +89,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getSlotBeanCount(int i) {
 		// TODO: Implement
-            return board[i][getSlotCount()-1];
+            return board[i][getSlotCount()-1];                      //slots are located in the last column in the array in reverse order. The row they are in is what changes
         }
 
 	/**
@@ -99,10 +100,10 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
         int average = 0;
-        for (int x = 0; x<getSlotCount(); x++){
+        for (int x = 0; x<getSlotCount(); x++){                     //add up all beans in the last column of the 2d array(this column contains all of the slots
             average += board[x][getSlotCount()-1];
         }
-        average = average/getSlotCount();
+        average = average/getSlotCount();                           //divide by number of slots to get average
 		return average;
 	}
 
@@ -114,6 +115,34 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void upperHalf() {
 		// TODO: Implement
+        
+        int beansInSlots = 0;                                       //get total bean count in slots
+        for (int x = 0; x<getSlotCount(); x++){
+            beansInSlots += board[x][getSlotCount()-1];
+        }
+        
+        boolean isEven = ((beansInSlots%2) == 0);                   //decide if the total bean count in slots is even or odd
+        
+        int amountToBeRemoved = 0;                                  //decide how many beans to remove based on even-ness
+        if(isEven){
+            amountToBeRemoved = beansInSlots/2;
+        }
+        else{
+            amountToBeRemoved = (beansInSlots-1)/2;
+        }
+        
+        int temp;
+        for (int x = getSlotCount()-1; amountToBeRemoved>0; x--){   //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
+        
+            if(amountToBeRemoved >= board[x][getSlotCount()-1]){    //two possible cases
+                temp = board[x][getSlotCount()-1];                  //get the amount of beans in the slot being looked at
+                board[x][getSlotCount()-1] = 0;                     //remove beans from the current slot
+                amountToBeRemoved -= temp;                          //take note of how many more beans need removed
+            }
+            else{
+                board[x][getSlotCount()-1]-= amountToBeRemoved;     //case 2
+            }
+        }
 	}
 
 	/**
@@ -124,6 +153,34 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void lowerHalf() {
 		// TODO: Implement
+        
+        int beansInSlots = 0;                                       //get total bean count in slots
+        for (int x = 0; x<getSlotCount(); x++){
+            beansInSlots += board[x][getSlotCount()-1];
+        }
+        
+        boolean isEven = ((beansInSlots%2) == 0);                   //decide if the total bean count in slots is even or odd
+        
+        int amountToBeRemoved = 0;                                  //decide how many beans to remove based on even-ness
+        if(isEven){
+            amountToBeRemoved = beansInSlots/2;
+        }
+        else{
+            amountToBeRemoved = (beansInSlots-1)/2;
+        }
+        
+        int temp;
+        for (int x = 0; amountToBeRemoved>0; x++){                  //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
+        
+            if(amountToBeRemoved >= board[x][getSlotCount()-1]){    //two possible cases
+                temp = board[x][getSlotCount()-1];                  //get the amount of beans in the slot being looked at
+                board[x][getSlotCount()-1] = 0;                     //remove beans from the current slot
+                amountToBeRemoved -= temp;                          //take note of how many more beans need removed
+            }
+            else{
+                board[x][getSlotCount()-1]-= amountToBeRemoved;     //case 2
+            }
+        }
 	}
 
 	/**
