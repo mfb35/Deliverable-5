@@ -236,7 +236,7 @@ public class BeanCounterLogicTest {
 	 */
 	@Test
 	public void testLowerHalf() {
-		// TODO: Implement
+		
 		logic.reset(beans);
 		int beansInFlight = 0;
 		int beanSlotCount = 0;
@@ -273,23 +273,28 @@ public class BeanCounterLogicTest {
 			beanSlotCount += logic.getSlotBeanCount(i);
 		}
 			assertTrue(beanSlotCount == lowerHalf);
-		
-//		int halfmark = 0;
-//		
-//		if(slotCount % 2 != 0) {
-//			halfmark = (slotCount + 1) / 2;
-//		}
-//		else {
-//			halfmark = slotCount / 2;
-//		}
-//		
-//		for(int i=0; i < halfmark; i++) {
-//			beanSlotCount += logic.getSlotBeanCount(i);
-//		}
-//		assertTrue(beanSlotCount == lowerHalf);
-		
-			//could count the beans in the lowerHalf and make sure they add up to half.
+
+				//remove half beans starting from the highest slot and make sure they are the same
+				//as the logic bean slot counts
+			int counter = lowerHalf;
+			while(counter > 0) {
+				int slot = -1;
+				for(int i=(lHalf.length-1); i >= 0; i--) {
+					if(lHalf[i] != 0) {
+						slot = i;
+						break;
+					}
+				}
+				
+				if(slot == -1)
+					break;
+				lHalf[slot]--;
+				counter--;
+			}
 			
+			for(int i=0; i < lHalf.length; i++) {
+				assertTrue(lHalf[i] == logic.getSlotBeanCount(i));
+			}
 	}
 	
 	/**
@@ -321,7 +326,7 @@ public class BeanCounterLogicTest {
 		else {
 			upperHalf = beanCount / 2;
 		}
-		int[] lHalf = new int[slotCount];
+		int[] uHalf = new int[slotCount];
 		while(true) {
 			boolean response = logic.advanceStep();
 			if(response == false)
@@ -334,7 +339,7 @@ public class BeanCounterLogicTest {
 				beansInFlight++;
 			}
 			beanSlotCount += logic.getSlotBeanCount(i);
-			lHalf[i] = logic.getSlotBeanCount(i);
+			uHalf[i] = logic.getSlotBeanCount(i);
 		}
 		
 		assertTrue(logic.getRemainingBeanCount() == 0);
@@ -350,6 +355,28 @@ public class BeanCounterLogicTest {
 		}
 		
 		assertTrue(beanSlotCount == upperHalf);
+		
+		//remove half beans starting from the highest slot and make sure they are the same
+		//as the logic bean slot counts
+		int counter = upperHalf;
+		while(counter > 0) {
+			int slot = -1;
+			for(int i=0; i < uHalf.length; i++) {
+				if(uHalf[i] != 0) {
+					slot = i;
+					break;
+				}
+			}
+			
+			if(slot == -1)
+				break;
+			uHalf[slot]--;
+			counter--;
+		}
+		
+		for(int i=0; i < uHalf.length; i++) {
+			assertTrue(uHalf[i] == logic.getSlotBeanCount(i));
+		}
 	}
 	
 	/**
