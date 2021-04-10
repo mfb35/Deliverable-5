@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.util.Formatter;
 import java.util.Random;
 
@@ -31,8 +32,14 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
     int theSlotCount;                                               //total amount of slots beans can collect in
     int remainingBeanCount;                                         //beans that still have not entered the machine
     int board[][];                                                  //a 2d array representation of the machine(some parts of the array are unused)
-    
-	/**
+    int[] countsInSlot;
+    Bean[] beans;
+    Bean[] beansInSlot;
+	
+    /*
+     * For the slot count, keep separate array which corresponds from 0-9 the final positions which keep the slotCount number
+     * */
+    /**
 	 * Constructor - creates the bean counter logic object that implements the core
 	 * logic with the provided number of slots.
 	 * 
@@ -43,6 +50,8 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
         theSlotCount = slotCount;                                   //initialize slot count based on parameter
         board = new int[slotCount][slotCount];                      //make the machine the correct size
         remainingBeanCount = 0; // needs changed                    //should be args[0]
+        countsInSlot = new int[theSlotCount];
+        beansInSlot = new Bean[theSlotCount];
 	}
 
 	/**
@@ -73,7 +82,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getInFlightBeanXPos(int yPos) {
 		// TODO: Implement
-        for(int x=0; 0<getSlotCount(); x++){                        //itterates through a single column in the 2d array(columns are the x axis in this representation)(unused parts of array are checked too)
+        for(int x=0; x < getSlotCount(); x++){                        //iterates through a single column in the 2d array(columns are the x axis in this representation)(unused parts of array are checked too)
             if(board[x][yPos] > 0){                                 //java defualt for ints is zero, so if it is not zero there is a bean there
                 return x;                                           //bean found, return its position on the 
             }
@@ -89,8 +98,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getSlotBeanCount(int i) {
 		// TODO: Implement
-            return board[i][getSlotCount()-1];                      //slots are located in the last column in the array in reverse order. The row they are in is what changes
-        }
+           // return board[i][getSlotCount()-1];                      //slots are located in the last column in the array in reverse order. The row they are in is what changes
+		return countsInSlot[i];
+	}
 
 	/**
 	 * Calculates the average slot number of all the beans in slots.
@@ -100,7 +110,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
         int average = 0;
-        for (int x = 0; x<getSlotCount(); x++){                     //add up all beans in the last column of the 2d array(this column contains all of the slots
+        for (int x = 0; x < getSlotCount(); x++){                     //add up all beans in the last column of the 2d array(this column contains all of the slots
             average += board[x][getSlotCount()-1];
         }
         average = average/getSlotCount();                           //divide by number of slots to get average
@@ -128,11 +138,11 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
             amountToBeRemoved = beansInSlots/2;
         }
         else{
-            amountToBeRemoved = (beansInSlots-1)/2;
+            amountToBeRemoved = beansInSlots - ((beansInSlots-1)/2);
         }
         
         int temp;
-        for (int x = getSlotCount()-1; amountToBeRemoved>0; x--){   //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
+        for (int x = getSlotCount()-1; amountToBeRemoved >= 0; x--){   //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
         
             if(amountToBeRemoved >= board[x][getSlotCount()-1]){    //two possible cases
                 temp = board[x][getSlotCount()-1];                  //get the amount of beans in the slot being looked at
@@ -155,7 +165,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		// TODO: Implement
         
         int beansInSlots = 0;                                       //get total bean count in slots
-        for (int x = 0; x<getSlotCount(); x++){
+        for (int x = 0; x < getSlotCount(); x++){
             beansInSlots += board[x][getSlotCount()-1];
         }
         
@@ -166,11 +176,11 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
             amountToBeRemoved = beansInSlots/2;
         }
         else{
-            amountToBeRemoved = (beansInSlots-1)/2;
+            amountToBeRemoved = beansInSlots - ((beansInSlots-1)/2);
         }
         
         int temp;
-        for (int x = 0; amountToBeRemoved>0; x++){                  //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
+        for (int x = 0; amountToBeRemoved > 0; x++){                  //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
         
             if(amountToBeRemoved >= board[x][getSlotCount()-1]){    //two possible cases
                 temp = board[x][getSlotCount()-1];                  //get the amount of beans in the slot being looked at
@@ -191,6 +201,26 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void reset(Bean[] beans) {
 		// TODO: Implement
+		this.beans = beans;
+		
+		for(int i=0; i < this.beans.length; i++) {
+			this.beans[i].reset();
+		}
+		
+		for(int i=0; i < theSlotCount; i++) {
+			for(int j=0; j < theSlotCount; j++) {
+				if(board[i][j] > 0) {
+					board[i][j] = 0;
+				}
+			}
+		}	
+		remainingBeanCount = this.beans.length-1;
+		for(int i=0; i < countsInSlot.length; i++) {
+			countsInSlot[i] = 0;
+		}
+		//set the first bean to true
+		board[0][0] = 1;
+		
 	}
 
 	/**
@@ -200,6 +230,30 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void repeat() {
 		// TODO: Implement
+		/*
+		 * reset the board, reset all beans, add one bean to the top. Reassign remainingBeanCount.
+		 */
+		for(int i=0; i < theSlotCount; i++) {
+			for(int j=0; j < theSlotCount; j++) {
+				if(board[i][j] > 0) {
+					board[i][j] = 0;
+				}
+			}
+		}	
+		
+		for(int i=0; i < this.beans.length; i++) {
+			this.beans[i].reset();
+		}
+		
+		remainingBeanCount = this.beans.length-1;
+		
+		for(int i=0; i < countsInSlot.length; i++) {
+			countsInSlot[i] = 0;
+		}
+		
+		//set the first bean to true
+		board[0][0] = 1;
+		
 	}
 
 	/**
@@ -212,7 +266,145 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public boolean advanceStep() {
 		// TODO: Implement
-		return false;
+		boolean answer = true;
+		Point[] newpositions = new Point[theSlotCount];
+		Point[] oldpositions = new Point[theSlotCount];
+		/*
+		 * How to know which bean is on the board and where?
+		 * for each ypos, if there is bean on board, then make it choose 
+		 * add another bean on the top and decrement remainingBeanCount;
+		 * Keep track of which bean is in which ypos by either keeping a separate
+		 * datastructure which keeps xpos and ypos or that inherently keeps track of 
+		 * which bean is in which ypos based on its location in the datastructure.
+		 * For each loop:
+		 * 1. search datastructure starting from the end to see if any bean is null
+		 * 2. If it isn't, move the bean down a peg and move it to the right in the datastructure.
+		 * 3. If the bean is in the last place, remove it and add one to the counter.
+		 * 4. Add a new bean to the first place in the datastructure and remove the bean from the 
+		 * beans array
+		 * For each bean:
+		 * 1. Search the board for any xpos where there is a bean
+		 * 2. Match the bean xpos and the found xpos.
+		 * 3. Make that bean choose. Reset the old bean position to 0
+		 * 4. Set the new bean position to the new xpos, ypos+1;
+		 **/
+
+		
+
+		
+		for(int i=0; i < theSlotCount; i++) {
+			for(int j=0; j < theSlotCount; j++) {
+				if(board[i][j] != 0) {
+				//	System.out.println("new point added: " + i + " , " + j);
+					if(j == theSlotCount-1) {
+						//board[i][j] = 0;
+						//countsInSlot[i]++;
+					}
+					else {
+						for(int k=0; k < oldpositions.length; k++) {
+							if(oldpositions[k] == null) {
+								oldpositions[i] = new Point(i, j);
+								System.out.println("new point added: " + oldpositions[i].x + " , " + oldpositions[i].y);
+								break;
+							}
+						}
+					}
+					
+				}
+			}
+		}
+		//need some way to maintain which bean is on the board and where. 
+		for(int i = 0; i < oldpositions.length; i++) {
+			//should it loop over oldpositions or beans? I think it should be oldpositions.
+			//how to associate certain beans in array with what is on the board?
+			//will read the bean at 0,0 on the first try but won't read the bean on the second try?
+			if(oldpositions[i] != null) {
+				//System.out.println("new point found: " + oldpositions[i].x + " , " + oldpositions[i].y);
+				int l = oldpositions[i].y;
+				for(int j=0; j < beans.length; j++) {
+					if(board[beans[j].getXPos()][l] == 1) {
+						System.out.println("there exists bean " + j + " at position: " + oldpositions[i].x + " , " + oldpositions[i].y);
+						board[beans[j].getXPos()][l] = 0;
+						beans[j].choose();
+						board[beans[j].getXPos()][(l + 1)] = 1; 
+					}
+				}
+			
+			}
+
+		}
+		
+//		for(int i=0; i < oldpositions.length; i++) {
+//			if(oldpositions[i] != null) {
+//				//need to create an array of beans as many beans will have the same x so all of them need to be advanced.
+//				//invariant: beans may share xPos but they should never have the same ypos
+//				int bean = -1;
+//				for(int j=0; j < beans.length; j++) {
+//					if(beans[j].getXPos() == oldpositions[i].x) { //get the specific bean with to move
+//						bean = j;
+//					}
+//				}
+//				
+//				if(bean != -1) {
+//					
+//					if(oldpositions[i].y < (theSlotCount-1)) { //need to check if it is not in a slot already.
+//						board[oldpositions[i].x][oldpositions[i].y] = 0;
+//						beans[bean].choose();
+//						board[beans[bean].getXPos()][(oldpositions[i].y + 1)] = 1; //is xpos being updated by more than 1?
+//					
+//					}
+//				}
+//				else {
+//					System.out.println("Phantom Bean at Point(" + oldpositions[i].x + ", " + oldpositions[i].y + ")");
+//				}
+//			}
+//		}
+		
+		
+		for(int i=0; i < theSlotCount; i++) {
+			for(int j=0; j < theSlotCount; j++) {
+				if(board[i][j] != 0) {
+					if(j == theSlotCount-1) {
+					}
+					else {
+						for(int k=0; k < newpositions.length; k++) {
+							if(newpositions[k] == null) {
+								newpositions[k] = new Point(i, j);
+								break;
+							}
+						}
+					}
+					
+				}
+			}
+		}
+		
+		for(int i=0; i < newpositions.length; i++) {
+			if(oldpositions[i] != null && newpositions[i] != null) {
+				if((oldpositions[i].x != newpositions[i].x) || (oldpositions[i].y != newpositions[i].y)) {
+					answer = false;
+				}
+			}
+			
+		}
+
+		for(int i=0; i < theSlotCount; i++) {
+			if(board[i][theSlotCount-1] != 0) {
+				answer = false;
+			}
+		}
+		
+		if(answer == true) {
+			//System.out.println("answer is true");
+		}
+		
+		if(remainingBeanCount != 0) {
+			remainingBeanCount--;
+			board[0][0] = 1;
+		}
+		
+		
+		return answer;
 	}
 	
 	/**
