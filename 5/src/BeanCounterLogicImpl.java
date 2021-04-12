@@ -37,7 +37,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
     int[] countsInSlot;
     Vector<Bean> beans;
     Bean[] beansAtPeg;
-	
+	Vector<Bean> backupbeans;
     /*
      * For the slot count, keep separate array which corresponds from 0-9 the final positions which keep the slotCount number
      * */
@@ -204,9 +204,10 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	public void reset(Bean[] beans) {
 		// TODO: Implement
 		this.beans = new Vector<>(beans.length);
-		
+		backupbeans = new Vector<>(beans.length);
 		for(int i=0; i < beans.length; i++) {
 			this.beans.add(beans[i]);
+			backupbeans.add(beans[i]);
 		}
 		
 		for(int i=0; i < this.beans.size(); i++) {
@@ -220,6 +221,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 				}
 			}
 		}	
+		for(int i=0; i < beansAtPeg.length; i++) {
+			beansAtPeg[i] = null;
+		}
 		remainingBeanCount = this.beans.size()-1;
 		for(int i=0; i < countsInSlot.length; i++) {
 			countsInSlot[i] = 0;
@@ -246,9 +250,17 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 				}
 			}
 		}	
+		for(int i=0; i < backupbeans.size(); i++) {
+			if(beans.contains(backupbeans.get(i)) == false)
+				beans.add(backupbeans.get(i));
+		}
 		
 		for(int i=0; i < this.beans.size(); i++) {
 			this.beans.get(i).reset();
+		}
+		
+		for(int i=0; i < beansAtPeg.length; i++) {
+			beansAtPeg[i] = null;
 		}
 		
 		remainingBeanCount = this.beans.size()-1;
@@ -259,7 +271,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		
 		//set the first bean to true
 		board[0][0] = 1;
-		
+		beansAtPeg[0] = this.beans.remove(0);
 	}
 
 	/**
@@ -349,11 +361,11 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			}
 
 		//add new bean to the top of the board and add one bean from beans array
-		if(remainingBeanCount != 0) {
-			remainingBeanCount--;
-			beansAtPeg[0] = beans.remove(0);
-			board[0][0] = 1;
-		}
+//			if(remainingBeanCount != 0) {
+//				remainingBeanCount--;
+//				beansAtPeg[0] = beans.remove(0);
+//				board[0][0] = 1;
+//			}
 		
 		
 		for(int i=0; i < theSlotCount; i++) {
@@ -388,6 +400,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 				answer = false;
 			}
 		}
+		
+		
+		
 		
 		if(answer == true) {
 			//System.out.println("answer is true");
