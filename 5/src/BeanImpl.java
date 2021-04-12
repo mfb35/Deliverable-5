@@ -86,22 +86,27 @@ public class BeanImpl implements Bean {
 			int dir = rand.nextInt(2);
 			
 			if(dir == 0) {
-				xpos--;
+//				if(xpos > 0)
+//					xpos--;
 			}
 			else if(dir == 1) {
-				xpos++;
+				if(xpos < slotCount-1)
+					xpos++;
 			}
 		}
 		else {
 			if(skill_level == 0) {
-				xpos--;
+//				if(xpos > 0)
+//					xpos--;
 			}
 			else if(skill_level == 9) {
-				xpos++;
+				if(xpos < slotCount-1)
+					xpos++;
 			}
 			else {
 				skill_level--;
-				xpos++;
+				if(xpos < slotCount-1)
+					xpos++;
 			}
 		}
 	}
