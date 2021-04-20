@@ -161,11 +161,10 @@ public class BeanCounterLogicTest {
 			boolean response = logic.advanceStep();
 			remainingBeans = logic.getRemainingBeanCount();
 			assertTrue(beanCount == (beansInSlot + beansInAction + remainingBeans));
-			if (response == false) {
+			if (response == false) { 
 				break;
 			}
 		}
-
 	}
 
 	/**
