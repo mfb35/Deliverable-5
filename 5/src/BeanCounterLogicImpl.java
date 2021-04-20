@@ -6,7 +6,7 @@ import java.util.Vector;
 public class BeanCounterLogicImpl implements BeanCounterLogic {
 	int theSlotCount; 
 	int remainingBeanCount; 
-	int board[][]; 
+	int[][] board; 
 	int totalBeans;
 	int[] countsInSlot;
 	Vector<Bean> beans;

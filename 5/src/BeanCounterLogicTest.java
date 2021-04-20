@@ -1,23 +1,12 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import gov.nasa.jpf.vm.Verify;
 import java.util.Random;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import gov.nasa.jpf.vm.Verify;
-
-/**
- * Code by @author Wonsun Ahn
- * 
- * <p>
- * Uses the Java Path Finder model checking tool to check BeanCounterLogic in
- * various modes of operation. It checks BeanCounterLogic in both "luck" and
- * "skill" modes for various numbers of slots and beans. It also goes down all
- * the possible random path taken by the beans during operation.
- */
 
 public class BeanCounterLogicTest {
 	private static BeanCounterLogic logic; // The core logic of the program
@@ -62,7 +51,8 @@ public class BeanCounterLogicTest {
 		}
 
 		// A failstring useful to pass to assertions to get a more descriptive error.
-		failString = "Failure in (slotCount=" + slotCount + ", beanCount=" + beanCount + ", isLucky=" + isLuck + "):";
+		failString = "Failure in (slotCount=" + slotCount + ", beanCount="
+				+ beanCount + ", isLucky=" + isLuck + "):";
 	}
 
 	@AfterClass
@@ -138,8 +128,9 @@ public class BeanCounterLogicTest {
 					assertTrue(xpos >= 0 && xpos <= i);
 				}
 			}
-			if (response == false)
+			if (response == false) {
 				break;
+			}
 		}
 	}
 
@@ -158,7 +149,7 @@ public class BeanCounterLogicTest {
 			int beansInAction = 0;
 			int beansInSlot = 0;
 			int remainingBeans = 0;
-			boolean response = logic.advanceStep();
+			
 			for (int i = 0; i < slotCount; i++) {
 				int xpos = logic.getInFlightBeanXPos(i);
 				if (xpos != BeanCounterLogic.NO_BEAN_IN_YPOS) {
@@ -166,10 +157,13 @@ public class BeanCounterLogicTest {
 				}
 				beansInSlot += logic.getSlotBeanCount(i);
 			}
+			
+			boolean response = logic.advanceStep();
 			remainingBeans = logic.getRemainingBeanCount();
 			assertTrue(beanCount == (beansInSlot + beansInAction + remainingBeans));
-			if (response == false)
+			if (response == false) {
 				break;
+			}
 		}
 
 	}
@@ -189,8 +183,9 @@ public class BeanCounterLogicTest {
 		int beanSlotCount = 0;
 		while (true) {
 			boolean response = logic.advanceStep();
-			if (response == false)
+			if (response == false) {
 				break;
+			}
 		}
 
 		for (int i = 0; i < slotCount; i++) {
@@ -231,8 +226,9 @@ public class BeanCounterLogicTest {
 
 		while (true) {
 			boolean response = logic.advanceStep();
-			if (response == false)
+			if (response == false) {
 				break;
+			}
 		}
 
 		for (int i = 0; i < slotCount; i++) {
@@ -270,8 +266,9 @@ public class BeanCounterLogicTest {
 				}
 			}
 
-			if (slot == -1)
+			if (slot == -1) {
 				break;
+			}
 
 			counter--;
 			lHalf[slot]--;
@@ -311,8 +308,9 @@ public class BeanCounterLogicTest {
 
 		while (true) {
 			boolean response = logic.advanceStep();
-			if (response == false)
+			if (response == false) {
 				break;
+			}
 		}
 
 		for (int i = 0; i < slotCount; i++) {
@@ -353,8 +351,9 @@ public class BeanCounterLogicTest {
 				}
 			}
 
-			if (slot == -1)
+			if (slot == -1) {
 				break;
+			}
 			uHalf[slot] -= 1;
 			counter -= 1;
 		}
@@ -382,8 +381,9 @@ public class BeanCounterLogicTest {
 
 		while (true) {
 			boolean response = logic.advanceStep();
-			if (response == false)
+			if (response == false) {
 				break;
+			}
 		}
 
 		for (int i = 0; i < slotCount; i++) {
@@ -394,8 +394,9 @@ public class BeanCounterLogicTest {
 
 		while (true) {
 			boolean response = logic.advanceStep();
-			if (response == false)
+			if (response == false) {
 				break;
+			}
 		}
 
 		if (isLuck == false) {
