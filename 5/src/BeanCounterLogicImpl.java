@@ -112,11 +112,17 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
-        int average = 0;
-        for (int x = 0; x < getSlotCount(); x++){                     //add up all beans in the last column of the 2d array(this column contains all of the slots
-            average += board[x][getSlotCount()-1];
+        
+        double average = 0;                                         //the value to be returned
+        double totalBeansInSlots = 0;                               //used to divide the total number of slot occurances by inorder to calculate the average slot
+        
+        for (int x = 0; x < countsInSlot.length; x++){                
+            totalBeansInSlots += countsInSlot[x];                   //gets the total amount of beans so far that have fallen to the bottom of the machine
+            average += x*countsInSlot[x];                           //the counts in a slot multiplied by the slot number gets correct numerator to calculate the average slot
         }
-        average = average/getSlotCount();                           //divide by number of slots to get average
+        if(totalBeansInSlots != 0){                                 //division by zero creates a black hole in the center of the Earth
+            average = average/totalBeansInSlots;
+        }
 		return average;
 	}
 
