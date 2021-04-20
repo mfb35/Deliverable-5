@@ -3,37 +3,10 @@ import java.util.Formatter;
 import java.util.Random;
 import java.util.Vector;
 
-/**
- * Code by @author Wonsun Ahn
- * 
- * <p>
- * BeanCounterLogic: The bean counter, also known as a quincunx or the Galton
- * box, is a device for statistics experiments named after English scientist Sir
- * Francis Galton. It consists of an upright board with evenly spaced nails (or
- * pegs) in a triangular form. Each bean takes a random path and falls into a
- * slot.
- *
- * <p>
- * Beans are dropped from the opening of the board. Every time a bean hits a
- * nail, it has a 50% chance of falling to the left or to the right. The piles
- * of beans are accumulated in the slots at the bottom of the board.
- * 
- * <p>
- * This class implements the core logic of the machine. The MainPanel uses the
- * state inside BeanCounterLogic to display on the screen.
- * 
- * <p>
- * Note that BeanCounterLogic uses a logical coordinate system to store the
- * positions of in-flight beans.For example, for a 4-slot machine: (0, 0) (0, 1)
- * (1, 1) (0, 2) (1, 2) (2, 2) (0, 3) (1, 3) (2, 3) (3, 3) [Slot0] [Slot1]
- * [Slot2] [Slot3]
- */
-
 public class BeanCounterLogicImpl implements BeanCounterLogic {
-	// TODO: Add member methods and variables as needed
-	int theSlotCount; // total amount of slots beans can collect in
-	int remainingBeanCount; // beans that still have not entered the machine
-	int board[][]; // a 2d array representation of the machine(some parts of the array are unused)
+	int theSlotCount; 
+	int remainingBeanCount; 
+	int board[][]; 
 	int totalBeans;
 	int[] countsInSlot;
 	Vector<Bean> beans;
@@ -51,10 +24,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * @param slotCount the number of slots in the machine
 	 */
 	BeanCounterLogicImpl(int slotCount) {
-		// TODO: Implement
-		theSlotCount = slotCount; // initialize slot count based on parameter
-		board = new int[slotCount][slotCount]; // make the machine the correct size
-		remainingBeanCount = 0; // needs changed //should be args[0]
+		theSlotCount = slotCount; 
+		board = new int[slotCount][slotCount]; 
+		remainingBeanCount = 0; 
 		countsInSlot = new int[theSlotCount];
 		beansAtPeg = new Bean[theSlotCount];
 	}
@@ -65,8 +37,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * @return number of slots
 	 */
 	public int getSlotCount() {
-		// TODO: Implement
-		return theSlotCount; // simple getter
+		return theSlotCount;
 	}
 
 	/**
@@ -75,8 +46,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * @return number of beans remaining
 	 */
 	public int getRemainingBeanCount() {
-		// TODO: Implement
-		return remainingBeanCount; // simple getter
+		return remainingBeanCount; 
 	}
 
 	/**
@@ -87,16 +57,13 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 *         return NO_BEAN_IN_YPOS
 	 */
 	public int getInFlightBeanXPos(int yPos) {
-		// TODO: Implement
-		for (int x = 0; x < getSlotCount(); x++) { // iterates through a single column in the 2d array(columns are the x
-													// axis in this representation)(unused parts of array are checked
-													// too)
-			if (board[x][yPos] > 0) { // java defualt for ints is zero, so if it is not zero there is a bean there
-				return x; // bean found, return its position on the
+		
+		for (int x = 0; x < getSlotCount(); x++) { 
+			if (board[x][yPos] > 0) { 
+				return x; 
 			}
 		}
-		return NO_BEAN_IN_YPOS; // no beans in this particualar column of the array(yPos in machine is a row in
-								// the array)
+		return NO_BEAN_IN_YPOS; 					
 	}
 
 	/**
@@ -106,9 +73,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * @return number of beans in slot
 	 */
 	public int getSlotBeanCount(int i) {
-		// TODO: Implement
-		// return board[i][getSlotCount()-1]; //slots are located in the last column in
-		// the array in reverse order. The row they are in is what changes
 		return countsInSlot[i];
 	}
 
@@ -120,17 +84,14 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
 
-		double average = 0; // the value to be returned
-		double totalBeansInSlots = 0; // used to divide the total number of slot occurances by inorder to calculate
-										// the average slot
-
+		double average = 0; 
+		double totalBeansInSlots = 0; 
+										
 		for (int x = 0; x < countsInSlot.length; x++) {
-			totalBeansInSlots += countsInSlot[x]; // gets the total amount of beans so far that have fallen to the
-													// bottom of the machine
-			average += x * countsInSlot[x]; // the counts in a slot multiplied by the slot number gets correct numerator
-											// to calculate the average slot
+			totalBeansInSlots += countsInSlot[x]; 
+			average += x * countsInSlot[x]; 							
 		}
-		if (totalBeansInSlots != 0) { // division by zero creates a black hole in the center of the Earth
+		if (totalBeansInSlots != 0) {
 			average = average / totalBeansInSlots;
 		}
 		return average;
@@ -150,20 +111,20 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			upperHalf = totalBeans / 2;
 		}
 		int counter = totalBeans - upperHalf;
-		// System.out.println("remCount: " + remainingBeanCount + " upperHalf: " +
-		// upperHalf + " " + "counter: " + counter);
+
 		while (counter > 0) {
 			int slot = -1;
 			for (int i = 0; i < theSlotCount; i++) {
 				if (countsInSlot[i] != 0) {
-					// System.out.println("found slot: " + i + " has beans: " + countsInSlot[i]);
+
 					slot = i;
 					break;
 				}
 			}
 
-			if (slot == -1)
+			if (slot == -1) {
 				break;
+			}
 
 			countsInSlot[slot] -= 1;
 			counter -= 1;
@@ -178,8 +139,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * will be remaining.
 	 */
 	public void lowerHalf() {
-		// TODO: Implement
-
 		int upperHalf = -1;
 		if (totalBeans % 2 != 0) {
 			upperHalf = (totalBeans - 1) / 2;
@@ -196,8 +155,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 				}
 			}
 
-			if (slot == -1)
+			if (slot == -1) {
 				break;
+			}
 
 			countsInSlot[slot] -= 1;
 			counter -= 1;
@@ -238,7 +198,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		for (int i = 0; i < countsInSlot.length; i++) {
 			countsInSlot[i] = 0;
 		}
-		// set the first bean to true
 
 		if (this.beans.size() != 0) {
 			board[0][0] = 1;
@@ -268,8 +227,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			}
 		}
 		for (int i = 0; i < backupbeans.size(); i++) {
-			if (beans.contains(backupbeans.get(i)) == false)
+			if (beans.contains(backupbeans.get(i)) == false) {
 				beans.add(backupbeans.get(i));
+			}
 		}
 
 		for (int i = 0; i < this.beans.size(); i++) {
@@ -330,6 +290,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			for (int j = 0; j < theSlotCount; j++) {
 				if (board[i][j] != 0) {
 					if (j == theSlotCount - 1) {
+						//this is a comment
 					} else {
 						for (int k = 0; k < oldpositions.length; k++) {
 							if (oldpositions[k] == null) {
@@ -338,7 +299,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 							}
 						}
 					}
-
 				}
 			}
 		}
@@ -384,6 +344,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			for (int j = 0; j < theSlotCount; j++) {
 				if (board[i][j] != 0) {
 					if (j == theSlotCount - 1) {
+						//this is a comment
 					} else {
 						for (int k = 0; k < newpositions.length; k++) {
 							if (newpositions[k] == null) {
@@ -403,7 +364,8 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 				ans = 1;
 			}
 			if (oldpositions[i] != null && newpositions[i] != null) {
-				if ((oldpositions[i].x != newpositions[i].x) || (oldpositions[i].y != newpositions[i].y)) {
+				if ((oldpositions[i].x != newpositions[i].x) 
+						|| (oldpositions[i].y != newpositions[i].y)) {
 					ans = 1;
 				}
 			}
