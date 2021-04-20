@@ -103,9 +103,6 @@ public class BeanCounterLogicTest {
 		int beansAtSlot = 0;
 		int beansInFlight = 0;
 		
-//		for(int i=0; i < slotCount; i++) {
-//			
-//		}
 		
 		for(int i=0; i < slotCount; i++) {
 			if(logic.getInFlightBeanXPos(i) != BeanCounterLogic.NO_BEAN_IN_YPOS) {
@@ -246,17 +243,20 @@ public class BeanCounterLogicTest {
 		int beanSlotCount = 0;
 		int lowerHalf = -1;
 		if(beanCount % 2 != 0) {
-			lowerHalf = (beanCount + 1) / 2;
+			lowerHalf = (beanCount - 1) / 2;
 		}
 		else {
 			lowerHalf = beanCount / 2;
 		}
 		int[] lHalf = new int[slotCount];
+		
 		while(true) {
 			boolean response = logic.advanceStep();
 			if(response == false)
 				break;
 		}
+		
+		
 		
 		for(int i=0; i < slotCount; i++) {
 			int xPos = logic.getInFlightBeanXPos(i);
@@ -276,7 +276,6 @@ public class BeanCounterLogicTest {
 		for(int i=0; i < slotCount; i++) {
 			beanSlotCount += logic.getSlotBeanCount(i);
 		}
-			//System.out.println(beanCount + " " + beanSlotCount + " " + lowerHalf);
 			assertTrue(beanSlotCount == lowerHalf);
 
 				//remove half beans starting from the highest slot and make sure they are the same
@@ -300,7 +299,6 @@ public class BeanCounterLogicTest {
 			}
 			
 			for(int i=lHalf.length-1; i >= 0 ; i--) {
-				//System.out.println(lHalf[i] + "  correct: " + logic.getSlotBeanCount(i));
 				assertTrue(lHalf[i] == logic.getSlotBeanCount(i));
 			}
 	}
@@ -330,12 +328,13 @@ public class BeanCounterLogicTest {
 		int upperHalf = -1;
 		
 		if(beanCount % 2 != 0) {
-			upperHalf = (beanCount + 1) / 2;
+			upperHalf = (beanCount - 1) / 2;
 		}
 		else {
 			upperHalf = beanCount / 2;
 		}
 		int[] uHalf = new int[slotCount];
+		
 		while(true) {
 			boolean response = logic.advanceStep();
 			if(response == false)
@@ -348,9 +347,11 @@ public class BeanCounterLogicTest {
 				beansInFlight++;
 			}
 			beanSlotCount += logic.getSlotBeanCount(i);
+			//System.out.print(logic.getSlotBeanCount(i) + " ");
 			uHalf[i] = logic.getSlotBeanCount(i);
+			//System.out.print(uHalf[i] + " ");
 		}
-		
+		//System.out.println();
 		assertTrue(logic.getRemainingBeanCount() == 0);
 		assertTrue(beansInFlight == 0);
 		assertTrue(beanSlotCount == beanCount);
@@ -360,6 +361,7 @@ public class BeanCounterLogicTest {
 		beanSlotCount = 0;
 		
 		for(int i=0; i < slotCount; i++) {
+			//System.out.print(logic.getSlotBeanCount(i) + " ");
 			beanSlotCount += logic.getSlotBeanCount(i);
 		}
 		
@@ -384,6 +386,7 @@ public class BeanCounterLogicTest {
 		}
 		
 		for(int i=0; i < uHalf.length; i++) {
+			//System.out.print(uHalf[i] + " ");
 			assertTrue(uHalf[i] == logic.getSlotBeanCount(i));
 		}
 	}
@@ -404,6 +407,7 @@ public class BeanCounterLogicTest {
 		//need to figure out how to get expected beans in each slot.
 		logic.reset(beans);
 		int[] prearr = new int[slotCount];
+		
 		while(true) {
 			boolean response = logic.advanceStep();
 			if(response == false)

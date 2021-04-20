@@ -34,6 +34,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
     int theSlotCount;                                               //total amount of slots beans can collect in
     int remainingBeanCount;                                         //beans that still have not entered the machine
     int board[][];                                                  //a 2d array representation of the machine(some parts of the array are unused)
+    int totalBeans;
     int[] countsInSlot;
     Vector<Bean> beans;
     Bean[] beansAtPeg;
@@ -126,49 +127,20 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * will be remaining.
 	 */
 	public void upperHalf() {
-		// TODO: Implement
-        
-//        int beansInSlots = 0;                                       //get total bean count in slots
-//        for (int x = 0; x<getSlotCount(); x++){
-//            beansInSlots += board[x][getSlotCount()-1];
-//        }
-//        
-//        boolean isEven = ((beansInSlots%2) == 0);                   //decide if the total bean count in slots is even or odd
-//        
-//        int amountToBeRemoved = 0;                                  //decide how many beans to remove based on even-ness
-//        if(isEven){
-//            amountToBeRemoved = beansInSlots/2;
-//        }
-//        else{
-//            amountToBeRemoved = beansInSlots - ((beansInSlots-1)/2);
-//        }
-//        
-//        int temp;
-//        for (int x = getSlotCount()-1; amountToBeRemoved >= 0; x--){   //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
-//        
-//            if(amountToBeRemoved >= board[x][getSlotCount()-1]){    //two possible cases
-//                temp = board[x][getSlotCount()-1];                  //get the amount of beans in the slot being looked at
-//                board[x][getSlotCount()-1] = 0;                     //remove beans from the current slot
-//                amountToBeRemoved -= temp;                          //take note of how many more beans need removed
-//            }
-//            else{
-//                board[x][getSlotCount()-1]-= amountToBeRemoved;     //case 2
-//            }
-//        }
-		
 		int upperHalf = -1;
-		if(remainingBeanCount % 2 != 0) {
-			upperHalf = (remainingBeanCount + 1) / 2;
+		if(totalBeans % 2 != 0) {
+			upperHalf = (totalBeans - 1) / 2;
 		}
 		else {
-			upperHalf = remainingBeanCount / 2;
+			upperHalf = totalBeans / 2;
 		}
-		//int[] uHalf = new int[theSlotCount];
-		int counter = remainingBeanCount - upperHalf;
-		while(counter >= 0) {
+		int counter = totalBeans - upperHalf;
+		//System.out.println("remCount: " + remainingBeanCount + " upperHalf: " + upperHalf + " " + "counter: " + counter);
+		while(counter > 0) {
 			int slot = -1;
 			for(int i=0; i < theSlotCount; i++) {
 				if(countsInSlot[i] != 0) {
+					//System.out.println("found slot: " + i + " has beans: " + countsInSlot[i]);
 					slot = i;
 					break;
 				}
@@ -191,45 +163,16 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void lowerHalf() {
 		// TODO: Implement
-        
-//        int beansInSlots = 0;                                       //get total bean count in slots
-//        for (int x = 0; x < getSlotCount(); x++){
-//            beansInSlots += board[x][getSlotCount()-1];
-//        }
-//        
-//        boolean isEven = ((beansInSlots%2) == 0);                   //decide if the total bean count in slots is even or odd
-//        
-//        int amountToBeRemoved = 0;                                  //decide how many beans to remove based on even-ness
-//        if(isEven){
-//            amountToBeRemoved = beansInSlots/2;
-//        }
-//        else{
-//            amountToBeRemoved = beansInSlots - ((beansInSlots-1)/2);
-//        }
-//        
-//        int temp;
-//        for (int x = 0; amountToBeRemoved > 0; x++){                  //itterate through the slots starting at the first one taking beans away until you have reached amount to be removed
-//        
-//            if(amountToBeRemoved >= board[x][getSlotCount()-1]){    //two possible cases
-//                temp = board[x][getSlotCount()-1];                  //get the amount of beans in the slot being looked at
-//                board[x][getSlotCount()-1] = 0;                     //remove beans from the current slot
-//                amountToBeRemoved -= temp;                          //take note of how many more beans need removed
-//            }
-//            else{
-//                board[x][getSlotCount()-1]-= amountToBeRemoved;     //case 2
-//            }
-//        }
 		
 		int upperHalf = -1;
-		if(remainingBeanCount % 2 != 0) {
-			upperHalf = (remainingBeanCount + 1) / 2;
+		if(totalBeans % 2 != 0) {
+			upperHalf = (totalBeans - 1) / 2;
 		}
 		else {
-			upperHalf = remainingBeanCount / 2;
+			upperHalf = totalBeans / 2;
 		}
-		//int[] uHalf = new int[theSlotCount];
-		int counter = remainingBeanCount - upperHalf;
-		while(counter >= 0) {
+		int counter = totalBeans - upperHalf;
+		while(counter > 0) {
 			int slot = -1;
 			for(int i=theSlotCount-1; i >= 0; i--) {
 				if(countsInSlot[i] != 0) {
@@ -275,13 +218,18 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		for(int i=0; i < beansAtPeg.length; i++) {
 			beansAtPeg[i] = null;
 		}
-		remainingBeanCount = this.beans.size()-1;
+		remainingBeanCount = this.beans.size() - 1;
+		totalBeans = this.beans.size();
 		for(int i=0; i < countsInSlot.length; i++) {
 			countsInSlot[i] = 0;
 		}
 		//set the first bean to true
-		board[0][0] = 1;
-		beansAtPeg[0] = this.beans.remove(0);
+		
+		if(this.beans.size() != 0) {
+			board[0][0] = 1;
+			beansAtPeg[0] = this.beans.remove(0);
+		}
+			
 	}
 
 	/**
@@ -365,16 +313,12 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		for(int i=0; i < theSlotCount; i++) {
 			for(int j=0; j < theSlotCount; j++) {
 				if(board[i][j] != 0) {
-				//	System.out.println("new point added: " + i + " , " + j);
 					if(j == theSlotCount-1) {
-						//board[i][j] = 0;
-						//countsInSlot[i]++;
 					}
 					else {
 						for(int k=0; k < oldpositions.length; k++) {
 							if(oldpositions[k] == null) {
 								oldpositions[i] = new Point(i, j);
-								//System.out.println("old point added: " + oldpositions[i].x + " , " + oldpositions[i].y);
 								break;
 							}
 						}
@@ -396,18 +340,19 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 				int yPos = -1;
 				if(beansAtPeg[i] != null) {
 					yPos = i;
-					//System.out.println("Bean not null at index: " + i);
 				}
 				
 				if(yPos != -1) {
 					board[beansAtPeg[i].getXPos()][i] = 0;
 					if(i != theSlotCount-1) {
 						beansAtPeg[i].choose();
+						//System.out.println("bean chose: " + beansAtPeg[i].getXPos());
 						board[beansAtPeg[i].getXPos()][i+1] = 1;
 						beansAtPeg[i+1] = beansAtPeg[i]; //move the bean to the right
 						beansAtPeg[i] = null;
 					}
 					else {
+						//System.out.println("adding 1 to " + beansAtPeg[i].getXPos());
 						countsInSlot[beansAtPeg[i].getXPos()]++;
 						beansAtPeg[i] = null;
 					}
@@ -431,7 +376,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 						for(int k=0; k < newpositions.length; k++) {
 							if(newpositions[k] == null) {
 								newpositions[k] = new Point(i, j);
-								//System.out.println("new point added: " + i + " , " + j);
 								break;
 							}
 						}
@@ -443,12 +387,10 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		
 		for(int i=0; i < newpositions.length; i++) {
 			if((oldpositions[i] == null && newpositions[i] != null) || (oldpositions[i] != null && newpositions[i] == null)) {
-				//answer = false;
 				ans = 1;
 			}
 			if(oldpositions[i] != null && newpositions[i] != null) {
 				if((oldpositions[i].x != newpositions[i].x) || (oldpositions[i].y != newpositions[i].y)) {
-					//answer = false;
 					ans = 1;
 				}
 			}
@@ -458,7 +400,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 
 		for(int i=0; i < theSlotCount; i++) {
 			if(board[i][theSlotCount-1] != 0) {
-				//answer = false;
 				ans = 1;
 			}
 		}
@@ -467,13 +408,8 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		
 		
 		if(ans == 0) {
-//			System.out.println(getRemainingBeanCount());
-//			System.out.println("answer is true");
 			answer = false;
-		}
-		
-
-		
+		}	
 		return answer;
 	}
 	
