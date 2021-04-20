@@ -277,9 +277,16 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			countsInSlot[i] = 0;
 		}
 		
-		//set the first bean to true
-		board[0][0] = 1;
-		beansAtPeg[0] = this.beans.remove(0);
+		
+		if(this.beans.size() != 0) {
+			//set the first bean to true
+			board[0][0] = 1;
+			beansAtPeg[0] = this.beans.remove(0);
+		}
+		else {
+			remainingBeanCount++;
+		}
+		
 	}
 
 	/**

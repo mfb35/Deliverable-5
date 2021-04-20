@@ -34,7 +34,7 @@ public class BeanCounterLogicTest {
 		if (Config.getTestType() == TestType.JUNIT) {
 			
 			slotCount = 5;
-			beanCount = 3;
+			beanCount = 0;
 			isLuck = true;
 		} else if (Config.getTestType() == TestType.JPF_ON_JUNIT) {
 			/*
@@ -243,7 +243,7 @@ public class BeanCounterLogicTest {
 		int beanSlotCount = 0;
 		int lowerHalf = -1;
 		if(beanCount % 2 != 0) {
-			lowerHalf = (beanCount - 1) / 2;
+			lowerHalf = (beanCount + 1) / 2;
 		}
 		else {
 			lowerHalf = beanCount / 2;
@@ -276,6 +276,7 @@ public class BeanCounterLogicTest {
 		for(int i=0; i < slotCount; i++) {
 			beanSlotCount += logic.getSlotBeanCount(i);
 		}
+			//System.out.println("beanSlotCount: "  + beanSlotCount + " lowerHalf: " + lowerHalf);
 			assertEquals(beanSlotCount, lowerHalf);
 
 				//remove half beans starting from the highest slot and make sure they are the same
@@ -328,7 +329,7 @@ public class BeanCounterLogicTest {
 		int upperHalf = -1;
 		
 		if(beanCount % 2 != 0) {
-			upperHalf = (beanCount - 1) / 2;
+			upperHalf = (beanCount + 1) / 2;
 		}
 		else {
 			upperHalf = beanCount / 2;
