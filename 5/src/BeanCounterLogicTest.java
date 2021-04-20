@@ -276,7 +276,7 @@ public class BeanCounterLogicTest {
 		for(int i=0; i < slotCount; i++) {
 			beanSlotCount += logic.getSlotBeanCount(i);
 		}
-			assertTrue(beanSlotCount == lowerHalf);
+			assertEquals(beanSlotCount, lowerHalf);
 
 				//remove half beans starting from the highest slot and make sure they are the same
 				//as the logic bean slot counts

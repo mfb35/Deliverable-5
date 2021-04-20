@@ -235,6 +235,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			board[0][0] = 1;
 			beansAtPeg[0] = this.beans.remove(0);
 		}
+		else {
+			remainingBeanCount++;
+		}
 			
 	}
 
